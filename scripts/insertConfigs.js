@@ -57,7 +57,6 @@ async function insertData() {
     await Configuration.create(cfg);
   }
   console.log('Inserted configurations.');
-  process.exit();
 }
 
 insertData().catch(console.error);
