@@ -1,6 +1,7 @@
 // blockFilter.js
 class BlockFilter {
   constructor(config) {
+    console.log("Initializing BlockFilter with config:", config);
     this.config = config;
   }
 

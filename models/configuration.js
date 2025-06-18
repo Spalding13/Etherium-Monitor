@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
 const configurationSchema = new mongoose.Schema({
-  configId: {
+    name:String,
+    description: String,
+    configId: {
     type: String,
     required: true,
     unique: true

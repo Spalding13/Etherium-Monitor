@@ -1,0 +1,26 @@
+{ 
+  "name": "Test Configuration 2",
+  "description": "This is a test configuration for monitoring transactions on the Ethereum network.",
+  "configId": "f4c672a1-5e19-4a70-8c3b-2c9b6b4f48d9",
+  "filter": {
+    "blockNumber": {
+      "customRule": "any",
+      "min": "1",
+      "max": "999999999999999999"
+    },
+    "chainId": "1",
+    "from": [],
+    "to": [],
+    "gasPrice": {
+      "min": "2000000000"
+    },
+    "value": {
+      "min": "0"
+    },
+    "inputContains": "",
+    "transactionType": ["0", "1", "2"],
+    "nonceRange": {
+      "min": "0"
+    }
+  }
+}

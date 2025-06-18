@@ -1,5 +1,5 @@
 const MonitorEth = require("./monitorWatcher");
-const config = require('./configurations/config_1.json');
+const config = require('./configurations/config_2_test.json');
 const BlockFilter = require('./monitorFilter');
 const TransactionSaver = require('./transactionSaver');
 
@@ -53,7 +53,7 @@ async function processTransactions() {
           });
 
           // Save filtered transactions to the database
-          TransactionSaver.saveTransactions(filteredTxs)
+          TransactionSaver.saveTransactions(filteredTxs, config)
             .then(() => {
               logWithTimestamp(`✅ Successfully saved ${filteredTxs.length} transaction(s) to the database.`);
             })
@@ -68,7 +68,7 @@ async function processTransactions() {
       } catch (err) {
         errorWithTimestamp("❌ Error during transaction search:", err);
       }
-    }, 30 * 1000);
+    }, 10 * 1000);
   } catch (error) {
     errorWithTimestamp("❌ Error starting monitor:", error);
   }
