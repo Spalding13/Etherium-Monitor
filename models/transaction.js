@@ -26,7 +26,7 @@ const transactionSchema = new mongoose.Schema({
   type: { type: String, required: true },     // BigInt as string
   v: { type: String, required: true },        // BigInt as string
   value: { type: String, required: true },    // BigInt as string
-  configId: { type: String, required: true }, // this is in reference to Configuration
+  configId: { type: String, required: true }, // this is reference to Configuration
   createdAt: { type: Date, default: Date.now } // for tracking when the transaction was created
 }, {
   timestamps: true // optional: adds createdAt and updatedAt timestamps
