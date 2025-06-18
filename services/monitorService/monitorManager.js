@@ -10,6 +10,8 @@ async function main() {
     console.log("🟢 Monitoring Ethereum transactions...");
 
     // Run the check every 30 seconds
+    // TODO: Figure out how to use node-cron 
+    // for production environemnt.
     setInterval(async () => {
       try {
         console.log('🔄 Checking for new transactions...');
