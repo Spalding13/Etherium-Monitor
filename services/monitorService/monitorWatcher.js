@@ -38,9 +38,9 @@ class MonitorEth {
         blocksWithTx.push(block);
 
         // Print transactions as you process them
-        for (const tx of block.transactions) {
-          // console.log("Found transaction:", tx);
-        }
+        // for (const tx of block.transactions) {
+        //  console.log("Found transaction:", tx);
+        // }
       }
     }
 
