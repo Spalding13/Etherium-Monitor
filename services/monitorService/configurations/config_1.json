@@ -1,0 +1,24 @@
+{
+  "configId": "a1b2c3d4-e5f6-7890-abcd-1234567890ef",
+  "filter": {
+    "blockNumber": {
+      "customRule": "odd",
+      "min": "1",
+      "max": "999999999999999999"
+    },
+    "chainId": "1",
+    "from": [],
+    "to": [],
+    "gasPrice": {
+      "min": "1000000000"
+    },
+    "value": {
+      "min": "0"
+    },
+    "inputContains": "",
+    "transactionType": ["0", "1", "2"],
+    "nonceRange": {
+      "min": "0"
+    }
+  }
+}
