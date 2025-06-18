@@ -23,27 +23,33 @@ class MonitorEth {
 
   async searchTransactions() {
     const lastBlockNumber = BigInt(await this.getLastBlockNumber());
-
     console.log(`Searching blocks: ${this.lastSyncedBlock + 1n} - ${lastBlockNumber}`);
+
+    const blocksWithTx = [];
 
     for (
       let blockNumber = this.lastSyncedBlock + 1n;
       blockNumber <= lastBlockNumber;
       blockNumber++
     ) {
-      // web3.eth.getBlock expects Number, so convert BigInt -> Number
       const block = await this.getBlock(blockNumber);
 
-      if (!block?.transactions) continue;
+      if (block && block.transactions && block.transactions.length > 0) {
+        blocksWithTx.push(block);
 
-      for (const tx of block.transactions) {
-        console.log("Found transaction:", tx);
+        // Print transactions as you process them
+        for (const tx of block.transactions) {
+          console.log("Found transaction:", tx);
+        }
       }
     }
 
     this.lastSyncedBlock = lastBlockNumber;
     console.log(`Finished searching up to block ${lastBlockNumber}`);
+
+    return blocksWithTx;
   }
+
 }
 
 module.exports = MonitorEth;
