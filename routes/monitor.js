@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const monitorService = require('../services/monitorService/monitorManager');
+
 
 // Monitor routes
 // This file defines the routes for the monitor system

@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // currently BigInt is converted to string
 const transactionSchema = new mongoose.Schema({
   accessList: {
-    type: [mongoose.Schema.Types.Mixed], // flexible array, adjust if you know the structure
+    type: [mongoose.Schema.Types.Mixed], 
     default: []
   },
   blockHash: { type: String, required: true },
@@ -25,9 +25,11 @@ const transactionSchema = new mongoose.Schema({
   transactionIndex: { type: String, required: true }, // BigInt as string
   type: { type: String, required: true },     // BigInt as string
   v: { type: String, required: true },        // BigInt as string
-  value: { type: String, required: true }     // BigInt as string
+  value: { type: String, required: true },    // BigInt as string
+  configId: { type: String, required: true }, // this is in reference to Configuration
+  createdAt: { type: Date, default: Date.now } // for tracking when the transaction was created
 }, {
   timestamps: true // optional: adds createdAt and updatedAt timestamps
 });
 
-module.exports = mongoose.model('Transaction', transactionSchema);
+module.exports = mongoose.model('Transactions', transactionSchema);

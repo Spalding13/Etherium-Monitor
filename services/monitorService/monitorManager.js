@@ -1,56 +1,77 @@
 const MonitorEth = require("./monitorWatcher");
-
-const httpProvider = "https://mainnet.infura.io/v3/9a8ff5d2c82f4a41a71fbb8595b6722c";
-
-
 const config = require('./configurations/config_1.json');
 const BlockFilter = require('./monitorFilter');
+const TransactionSaver = require('./transactionSaver');
+
+const httpProvider = "https://mainnet.infura.io/v3/9a8ff5d2c82f4a41a71fbb8595b6722c";
 const blockFilter = new BlockFilter(config);
 
+function getEETTime() {
+  const now = new Date();
+  return now.toLocaleTimeString('en-GB', {
+    timeZone: 'Europe/Helsinki', // EET/EEST
+    hour12: false                // 24-hour format
+  });
+}
 
-async function main() {
+function logWithTimestamp(...args) {
+  console.log(`[${getEETTime()}]`, ...args);
+}
+
+function errorWithTimestamp(...args) {
+  console.error(`[${getEETTime()}]`, ...args);
+}
+
+async function processTransactions() {
   try {
     const monitor = new MonitorEth(httpProvider);
     await monitor.initializeLastSyncedBlock();
 
-    console.log("🟢 Monitoring Ethereum transactions...");
+    logWithTimestamp("🟢 Monitoring Ethereum transactions...");
 
     // Run the check every 30 seconds
-    // TODO: Figure out how to use node-cron 
-    // for production environemnt.
+    // TODO: Use node-cron in production
     setInterval(async () => {
-  try {
-    console.log('🔄 Checking for new transactions...');
+      try {
+        logWithTimestamp("🔄 Checking for new transactions...");
 
-    const blocksArray = await monitor.searchTransactions();
+        const blocksArray = await monitor.searchTransactions();
 
-    if (Array.isArray(blocksArray) && blocksArray.length > 0) {
-      // Total number of transactions across all blocks
-      const totalTxs = blocksArray.reduce((sum, block) => sum + block.transactions.length, 0);
+        if (Array.isArray(blocksArray) && blocksArray.length > 0) {
+          // Total number of transactions across all blocks
+          const totalTxs = blocksArray.reduce((sum, block) => sum + block.transactions.length, 0);
 
-      // Filter the transactions (assuming your filter accepts array of blocks)
-      const filteredTxs = blockFilter.filter(blocksArray);
+          // Filter the transactions
+          const filteredTxs = blockFilter.filter(blocksArray);
 
-      console.log(`Received ${blocksArray.length} block(s) containing ${totalTxs} transaction(s). 🍻`);
-      console.log(`Filtered ${filteredTxs.length} transaction(s) after applying filters. 🍺`);
+          logWithTimestamp(`Received ${blocksArray.length} block(s) containing ${totalTxs} transaction(s). 🍻`);
+          logWithTimestamp(`Filtered ${filteredTxs.length} transaction(s) after applying filters. 🍺`);
 
-      // Optional: log block-wise transaction count
-      blocksArray.forEach((block) => {
-        console.log(`Block #${block.number} contains ${block.transactions.length} transaction(s).`);
-      });
-    } else {
-      console.log('No new blocks with transactions found.');
-    }
+          // Block-wise transaction count
+          blocksArray.forEach((block) => {
+            logWithTimestamp(`Block #${block.number} contains ${block.transactions.length} transaction(s).`);
+          });
 
-    console.log('✅ Check complete\n');
-  } catch (err) {
-    console.error('❌ Error during transaction search:', err);
-  }
+          // Save filtered transactions to the database
+          TransactionSaver.saveTransactions(filteredTxs)
+            .then(() => {
+              logWithTimestamp(`✅ Successfully saved ${filteredTxs.length} transaction(s) to the database.`);
+            })
+            .catch((err) => {
+              errorWithTimestamp("❌ Error saving transactions:", err);
+            });
+        } else {
+          logWithTimestamp("No new blocks with transactions found.");
+        }
+
+        logWithTimestamp("✅ Check complete\n");
+      } catch (err) {
+        errorWithTimestamp("❌ Error during transaction search:", err);
+      }
     }, 30 * 1000);
-
   } catch (error) {
-    console.error("❌ Error starting monitor:", error);
+    errorWithTimestamp("❌ Error starting monitor:", error);
   }
 }
 
-main();
+processTransactions();

@@ -1,11 +1,11 @@
-const Transaction = require("../models/Transaction");
+const Transaction = require("../../models/transaction");
 
 class TransactionSaver {
   /**
    * Saves an array of Ethereum transactions.
    * @param {Array<Object>} transactions - Array of transaction objects (from web3).
    */
-  async saveTransactions(transactions) {
+  static async saveTransactions(transactions) {
     if (!Array.isArray(transactions) || transactions.length === 0) {
       console.log("⚠️ No transactions to save.");
       return;
@@ -31,7 +31,7 @@ class TransactionSaver {
    * @param {Object} tx - A raw transaction object from web3.
    * @returns {Object} MongoDB-compatible document.
    */
-  prepareTransaction(tx) {
+  static prepareTransaction(tx) {
     return {
       accessList: tx.accessList || [],
       blockHash: tx.blockHash,
