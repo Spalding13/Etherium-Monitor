@@ -2,7 +2,7 @@ const express = require('express')
 const connectDB = require('./db/connect.js');
 const app = express()
 const port = 3000
-const populateDB = require('./scripts/insertConfigs.js'); // Import populateDB script
+//const populateDB = require('./scripts/insertConfigs.js'); // Import populateDB script
 
 app.use(express.json());
 

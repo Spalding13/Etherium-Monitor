@@ -1,9 +1,8 @@
-// ! USE WITH CAUTION: This script will drop the entire database.
+// ! PLS USE WITH CAUTION: with great power comes great responsibility
 
-// dropDatabase.js
+
 const mongoose = require('mongoose');
 
-// Change this to your actual connection string
 const MONGO_URI = 'mongodb://localhost:27017/eth-monitor'; 
 
 async function dropDatabase() {

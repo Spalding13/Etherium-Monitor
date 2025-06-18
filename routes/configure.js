@@ -60,4 +60,25 @@ router.delete('/:configId', async (req, res) => {
   }
 });
 
+// Activate a configuration by configId
+router.post('/activate/:configId', async (req, res) => {
+  try {
+    const { configId } = req.params;
+
+    // Find the config in DB
+    const config = await Configuration.findOne({ configId });
+    if (!config) {
+      return res.status(404).json({ error: 'Configuration not found' });
+    }
+
+    // Activate the configuration via your manager
+    await ConfigManager.activateConfig(config);
+
+    res.json({ message: `Configuration ${configId} activated successfully.` });
+  } catch (error) {
+    console.error('Error activating configuration:', error);
+    res.status(500).json({ error: 'Failed to activate configuration' });
+  }
+});
+
 module.exports = router;
