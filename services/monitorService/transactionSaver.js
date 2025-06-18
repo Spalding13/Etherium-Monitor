@@ -12,7 +12,7 @@ class TransactionSaver {
             return;
         }
 
-        const docs = transactions.map(this.prepareTransaction(config));
+        const docs = transactions.map(tx => this.prepareTransaction(tx, config));
 
         try {
             const result = await Transaction.collection.insertMany(docs, { ordered: false });
