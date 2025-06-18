@@ -3,3 +3,7 @@ node_modules/
 
 # Logs
 logs
+
+# Configuration files
+.vscode/
+.env

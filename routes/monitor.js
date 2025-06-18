@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-
+// Monitor routes
+// This file defines the routes for the monitor system
 router.get('/', (req, res) => {
   res.send('Monitor Home');
 });
