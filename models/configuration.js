@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const configurationSchema = new mongoose.Schema({
     name:String,
@@ -6,7 +7,8 @@ const configurationSchema = new mongoose.Schema({
     configId: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    default: uuidv4 // Auto-generate if not provided
   },
   filter: {
     blockNumber: {
