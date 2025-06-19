@@ -1,50 +1,64 @@
-const Configuration = require('./models/configuration');
+const EventEmitter = require('events');
+const mongoose = require('mongoose');
+const Configuration = require('../../models/configuration');
 
-class ConfigurationManager {
-  constructor(monitorManager) {
-    this.monitorManager = monitorManager;
+class ConfigurationManager extends EventEmitter {
+  constructor() {
+    super();
     this.activeConfig = null;
     this.initialized = false;
   }
 
-  // Initialize by loading active config from DB at app start
   async init() {
     if (this.initialized) return;
     this.activeConfig = await Configuration.findOne({ active: true });
     this.initialized = true;
     if (this.activeConfig) {
-      this.monitorManager.updateConfig(this.activeConfig);
+      this.emit('configUpdated', this.activeConfig);
     }
   }
 
-  // Get currently active config (cached)
   getActiveConfig() {
     return this.activeConfig;
   }
 
-  // Activate a new config by ID
   async setActiveConfig(configId) {
-    // Load the config from DB
-    const newConfig = await Configuration.findOne({ configId });
-    if (!newConfig) {
-      throw new Error('Configuration not found');
+    if (!configId) throw new Error('configId is required');
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const newConfig = await Configuration.findOne({ configId }).session(session);
+      if (!newConfig) {
+        throw new Error('Configuration not found');
+      }
+
+      if (this.activeConfig && this.activeConfig.configId === configId) {
+        await session.abortTransaction();
+        session.endSession();
+        return; // Already active
+      }
+
+      await Configuration.updateMany({ active: true }, { $set: { active: false } }).session(session);
+
+      newConfig.active = true;
+      await newConfig.save({ session });
+
+      await session.commitTransaction();
+      session.endSession();
+
+      this.activeConfig = newConfig;
+
+      // Emit event instead of direct call
+      this.emit('configUpdated', newConfig);
+
+      return newConfig;
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      throw err;
     }
-
-    // If already active, no action
-    if (this.activeConfig && this.activeConfig.configId === configId) {
-      return;
-    }
-
-    // Transactionally update DB: deactivate old active, activate new one
-    await Configuration.updateMany({ active: true }, { $set: { active: false } });
-    newConfig.active = true;
-    await newConfig.save();
-
-    // Update internal cache
-    this.activeConfig = newConfig;
-
-    // Notify monitorManager immediately
-    this.monitorManager.updateConfig(newConfig);
   }
 }
 

@@ -68,7 +68,7 @@ async function processTransactions() {
       } catch (err) {
         errorWithTimestamp("❌ Error during transaction search:", err);
       }
-    }, 10 * 1000);
+    }, 30 * 1000);
   } catch (error) {
     errorWithTimestamp("❌ Error starting monitor:", error);
   }

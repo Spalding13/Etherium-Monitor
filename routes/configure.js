@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Configuration = require('../models/configuration'); // assumes you have a Mongoose model
+const Configuration = require('../models/configuration'); 
+const ConfigManager = require('../services/configurationService/configurationManager');
 
 // GET all configurations
 router.get('/', async (req, res) => {
@@ -26,8 +27,21 @@ router.get('/:configId', async (req, res) => {
 // CREATE a new configuration
 router.post('/', async (req, res) => {
   try {
+    const { configId } = req.body;
+
+    if (!configId) {
+      return res.status(400).json({ error: 'configId is required' });
+    }
+
+    // Check if a config with the same configId already exists
+    const existingConfig = await Configuration.findOne({ configId });
+    if (existingConfig) {
+      return res.status(409).json({ error: 'Configuration with this configId already exists' });
+    }
+
     const config = new Configuration(req.body);
     await config.save();
+
     res.status(201).json(config);
   } catch (err) {
     res.status(400).json({ error: 'Failed to create configuration', details: err.message });

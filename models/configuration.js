@@ -10,9 +10,9 @@ const configurationSchema = new mongoose.Schema({
     },
     configId: {
     type: String,
-    required: true,
-    unique: true,
-    default: uuidv4 // Auto-generate if not provided
+      required: true,
+      unique: true,
+      default: uuidv4 // Auto-generate if not provided
     },
     filter: {
       blockNumber: {
