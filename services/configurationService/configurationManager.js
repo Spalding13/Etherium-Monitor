@@ -25,40 +25,33 @@ class ConfigurationManager extends EventEmitter {
   async setActiveConfig(configId) {
     if (!configId) throw new Error('configId is required');
 
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    const newConfig = await Configuration.findOne({ configId });
 
-    try {
-      const newConfig = await Configuration.findOne({ configId }).session(session);
-      if (!newConfig) {
-        throw new Error('Configuration not found');
-      }
-
-      if (this.activeConfig && this.activeConfig.configId === configId) {
-        await session.abortTransaction();
-        session.endSession();
-        return; // Already active
-      }
-
-      await Configuration.updateMany({ active: true }, { $set: { active: false } }).session(session);
-
-      newConfig.active = true;
-      await newConfig.save({ session });
-
-      await session.commitTransaction();
-      session.endSession();
-
-      this.activeConfig = newConfig;
-
-      this.emit('configUpdated', newConfig);
-
-      return newConfig;
-    } catch (err) {
-      await session.abortTransaction();
-      session.endSession();
-      throw err;
+    if (!newConfig) {
+      throw new Error('Configuration not found');
     }
+
+    // If the requested config is already active, skip updates
+    if (this.activeConfig && this.activeConfig.configId === configId) {
+      return newConfig;
+    }
+
+    // Deactivate all currently active configurations
+
+    await Configuration.updateMany({ active: true }, { $set: { active: false } });
+
+    // Activate the new configuration
+    newConfig.active = true;
+    console.log(`📃 Activating configuration: ${newConfig.configId}`);
+    await newConfig.save();
+
+    this.activeConfig = newConfig;
+
+    this.emit('configUpdated', newConfig);
+
+    return newConfig;
   }
+
 }
 
 // Export a single shared instance (singleton)
