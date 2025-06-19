@@ -6,6 +6,7 @@ class ConfigurationManager extends EventEmitter {
   constructor() {
     super();
     this.activeConfig = null;
+    // A flag for Singleton initialization
     this.initialized = false;
   }
 
@@ -46,7 +47,7 @@ class ConfigurationManager extends EventEmitter {
     this.activeConfig = newConfig;
 
     // Emit an event to notify monitor Manager of the new active configuration
-    console.log(`✅ Configuration ${newConfig.configId} is now active.`);
+    console.log(`✅ Configuration ${newConfig.name} is now active.`);
     this.emit('configUpdated', newConfig);
 
     return newConfig;
@@ -54,5 +55,4 @@ class ConfigurationManager extends EventEmitter {
 
 }
 
-// Export a single shared instance (singleton)
-module.exports = new ConfigurationManager();
+module.exports = ConfigurationManager;

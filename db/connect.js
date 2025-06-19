@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-async function connectDB() {
+async function connectDB(MONGO_URI) {
   try {
-    await mongoose.connect("mongodb://localhost:27017/eth-monitor", {
+    await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

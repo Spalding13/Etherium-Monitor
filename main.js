@@ -2,18 +2,26 @@ const express = require('express')
 const connectDB = require('./db/connect.js');
 const app = express()
 const port = 3000
+const MonitorManager = require('./services/monitorService/monitorManager.js');
+
 //const populateDB = require('./scripts/insertConfigs.js'); // Import populateDB script
 
 app.use(express.json());
 
-// const dropDB = require('./scripts/dropDB.js'); // Import dropDB script
+//
+const httpProvider = "https://mainnet.infura.io/v3/9a8ff5d2c82f4a41a71fbb8595b6722c";
+const monitor = new MonitorManager(httpProvider);
+monitor.start();
 
 //  Database connection
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/ethMonitor';
+// const dropDB = require('./scripts/dropDB.js'); // Import dropDB script
+
 connectDB(MONGO_URI);
 
 const configureRouter = require('./routes/configure'); 
 const monitorRouter = require('./routes/monitor');
+
 
 app.use('/monitor', monitorRouter);
 app.use('/configure', configureRouter);

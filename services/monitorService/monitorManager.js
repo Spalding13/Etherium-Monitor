@@ -3,75 +3,82 @@ const config = require('../configurationService/configurations/config_2_test.jso
 const BlockFilter = require('./monitorFilter');
 const TransactionSaver = require('./transactionSaver');
 
-const httpProvider = "https://mainnet.infura.io/v3/9a8ff5d2c82f4a41a71fbb8595b6722c";
-const blockFilter = new BlockFilter(config);
+class monitorManager {
+  constructor(httpProvider) {
+    if (monitorManager.instance) {
+      return monitorManager.instance;
+    }
 
-function getEETTime() {
-  const now = new Date();
-  return now.toLocaleTimeString('en-GB', {
-    timeZone: 'Europe/Helsinki', // EET/EEST
-    hour12: false                // 24-hour format
-  });
-}
+    if (!httpProvider) {
+      throw new Error('httpProvider is required to instantiate monitorManager');
+    }
 
-function logWithTimestamp(...args) {
-  console.log(`[${getEETTime()}]`, ...args);
-}
+    this.blockFilter = new BlockFilter(config);
+    this.monitor = new MonitorEth(httpProvider);
 
-function errorWithTimestamp(...args) {
-  console.error(`[${getEETTime()}]`, ...args);
-}
+    monitorManager.instance = this;
+  }
 
-async function processTransactions() {
-  try {
-    const monitor = new MonitorEth(httpProvider);
-    await monitor.initializeLastSyncedBlock();
+  getEETTime() {
+    const now = new Date();
+    return now.toLocaleTimeString('en-GB', {
+      timeZone: 'Europe/Helsinki', // EET/EEST
+      hour12: false                // 24-hour format
+    });
+  }
 
-    logWithTimestamp("🟢 Monitoring Ethereum transactions...");
+  logWithTimestamp(...args) {
+    console.log(`[${this.getEETTime()}]`, ...args);
+  }
 
-    // Run the check every 30 seconds
-    // TODO: Use node-cron in production
-    setInterval(async () => {
-      try {
-        logWithTimestamp("🔄 Checking for new transactions...");
+  errorWithTimestamp(...args) {
+    console.error(`[${this.getEETTime()}]`, ...args);
+  }
 
-        const blocksArray = await monitor.searchTransactions();
+  async start() {
+    try {
+      await this.monitor.initializeLastSyncedBlock();
 
-        if (Array.isArray(blocksArray) && blocksArray.length > 0) {
-          // Total number of transactions across all blocks
-          const totalTxs = blocksArray.reduce((sum, block) => sum + block.transactions.length, 0);
+      this.logWithTimestamp("🟢 Monitoring Ethereum transactions...");
 
-          // Filter the transactions
-          const filteredTxs = blockFilter.filter(blocksArray);
+      setInterval(async () => {
+        try {
+          this.logWithTimestamp("🔄 Checking for new transactions...");
 
-          logWithTimestamp(`Received ${blocksArray.length} block(s) containing ${totalTxs} transaction(s). 🍻`);
-          logWithTimestamp(`Filtered ${filteredTxs.length} transaction(s) after applying filters. 🍺`);
+          const blocksArray = await this.monitor.searchTransactions();
 
-          // Block-wise transaction count
-          blocksArray.forEach((block) => {
-            logWithTimestamp(`Block #${block.number} contains ${block.transactions.length} transaction(s).`);
-          });
+          if (Array.isArray(blocksArray) && blocksArray.length > 0) {
+            const totalTxs = blocksArray.reduce((sum, block) => sum + block.transactions.length, 0);
+            const filteredTxs = this.blockFilter.filter(blocksArray);
 
-          // Save filtered transactions to the database
-          TransactionSaver.saveTransactions(filteredTxs, config)
-            .then(() => {
-              logWithTimestamp(`✅ Successfully saved ${filteredTxs.length} transaction(s) to the database.`);
-            })
-            .catch((err) => {
-              errorWithTimestamp("❌ Error saving transactions:", err);
+            this.logWithTimestamp(`Received ${blocksArray.length} block(s) containing ${totalTxs} transaction(s). 🍻`);
+            this.logWithTimestamp(`Filtered ${filteredTxs.length} transaction(s) after applying filters. 🍺`);
+
+            blocksArray.forEach((block) => {
+              this.logWithTimestamp(`Block #${block.number} contains ${block.transactions.length} transaction(s).`);
             });
-        } else {
-          logWithTimestamp("No new blocks with transactions found.");
-        }
 
-        logWithTimestamp("✅ Check complete\n");
-      } catch (err) {
-        errorWithTimestamp("❌ Error during transaction search:", err);
-      }
-    }, 30 * 1000);
-  } catch (error) {
-    errorWithTimestamp("❌ Error starting monitor:", error);
+            TransactionSaver.saveTransactions(filteredTxs, config)
+              .then(() => {
+                this.logWithTimestamp(`✅ Successfully saved ${filteredTxs.length} transaction(s) to the database.`);
+              })
+              .catch((err) => {
+                this.errorWithTimestamp("❌ Error saving transactions:", err);
+              });
+          } else {
+            this.logWithTimestamp("No new blocks with transactions found.");
+          }
+
+          this.logWithTimestamp("✅ Check complete\n");
+        } catch (err) {
+          this.errorWithTimestamp("❌ Error during transaction search:", err);
+        }
+      }, 30 * 1000);
+
+    } catch (error) {
+      this.errorWithTimestamp("❌ Error starting monitor:", error);
+    }
   }
 }
 
-processTransactions();
+module.exports = monitorManager;

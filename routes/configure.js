@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Configuration = require('../models/configuration'); 
 const ConfigManager = require('../services/configurationService/configurationManager');
+const ConfigManagerInstance = new ConfigManager();
 
 // GET all configurations
 router.get('/', async (req, res) => {
@@ -115,7 +116,7 @@ router.patch('/activate/:configId', async (req, res) => {
       return res.status(400).json({ error: 'Configuration is already active' });
     }
 
-    await ConfigManager.setActiveConfig(configId);
+    await ConfigManagerInstance.setActiveConfig(configId);
 
     console.log(`PATCH /activate/${configId} - Configuration activated successfully`);
     res.json({ message: `Configuration ${configId} activated successfully.` });
