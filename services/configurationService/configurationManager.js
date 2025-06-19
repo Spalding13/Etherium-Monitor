@@ -23,12 +23,11 @@ class ConfigurationManager extends EventEmitter {
   }
 
   async setActiveConfig(configId) {
-    if (!configId) throw new Error('configId is required');
 
     const newConfig = await Configuration.findOne({ configId });
 
     if (!newConfig) {
-      throw new Error('Configuration not found');
+      throw new Error('❌ Configuration not found');
     }
 
     // If the requested config is already active, skip updates
@@ -37,7 +36,6 @@ class ConfigurationManager extends EventEmitter {
     }
 
     // Deactivate all currently active configurations
-
     await Configuration.updateMany({ active: true }, { $set: { active: false } });
 
     // Activate the new configuration
@@ -47,6 +45,8 @@ class ConfigurationManager extends EventEmitter {
 
     this.activeConfig = newConfig;
 
+    // Emit an event to notify monitor Manager of the new active configuration
+    console.log(`✅ Configuration ${newConfig.configId} is now active.`);
     this.emit('configUpdated', newConfig);
 
     return newConfig;
