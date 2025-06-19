@@ -61,7 +61,7 @@ router.delete('/:configId', async (req, res) => {
 });
 
 // Activate a configuration by configId
-router.post('/activate/:configId', async (req, res) => {
+router.patch('/activate/:configId', async (req, res) => {
   try {
     const { configId } = req.params;
 
