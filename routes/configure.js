@@ -86,7 +86,7 @@ router.patch('/activate/:configId', async (req, res) => {
     }
 
     // Activate the configuration via your manager
-    await ConfigManager.activateConfig(config);
+    await ConfigManager.setActiveConfig(config);
 
     res.json({ message: `Configuration ${configId} activated successfully.` });
   } catch (error) {

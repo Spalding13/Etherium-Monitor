@@ -50,7 +50,6 @@ class ConfigurationManager extends EventEmitter {
 
       this.activeConfig = newConfig;
 
-      // Emit event instead of direct call
       this.emit('configUpdated', newConfig);
 
       return newConfig;
@@ -62,4 +61,5 @@ class ConfigurationManager extends EventEmitter {
   }
 }
 
-module.exports = ConfigurationManager;
+// Export a single shared instance (singleton)
+module.exports = new ConfigurationManager();
