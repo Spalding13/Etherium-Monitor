@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET one configuration by configId
-router.get('/:configId', async (req, res) => {
+router.get('/find/:configId', async (req, res) => {
   const { configId } = req.params;
   console.log(`GET /${configId} - Fetching configuration`);
   try {
@@ -97,6 +97,18 @@ router.delete('/:configId', async (req, res) => {
   } catch (err) {
     console.error(`DELETE /${configId} - Failed to delete configuration:`, err);
     res.status(500).json({ error: 'Failed to delete configuration' });
+  }
+});
+
+// GET all configuration IDs with their active status
+router.get('/get', async (req, res) => {
+  try {
+    const configs = await Configuration.find({}, { configId: 1, active: 1, _id: 0 });
+
+    res.json({ configurations: configs });
+  } catch (error) {
+    console.error('Error fetching config IDs and statuses:', error);
+    res.status(500).json({ error: 'Failed to fetch configurations' });
   }
 });
 

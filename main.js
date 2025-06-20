@@ -5,7 +5,7 @@ const port = 3000
 const MonitorManager = require('./services/monitorService/monitorManager.js');
 const configManager = require('./services/configurationService/configurationManager');
 
-//const populateDB = require('./scripts/insertConfigs.js'); // Import populateDB script
+const populateDB = require('./scripts/insertConfigs.js'); // Import populateDB script
 
 app.use(express.json());
 
@@ -15,7 +15,7 @@ const monitor = new MonitorManager(httpProvider, configManager);
 monitor.start();
 
 //  Database connection
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/ethMonitor';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eth-monitor';
 // const dropDB = require('./scripts/dropDB.js'); // Import dropDB script
 
 connectDB(MONGO_URI);

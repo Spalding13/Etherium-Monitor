@@ -44,6 +44,7 @@ class monitorManager extends EventEmitter{
   }
 
   handleConfigUpdate(newConfig) {
+    this.blockFilter = new BlockFilter(newConfig);
     this.logWithTimestamp(`🔄 Configuration updated: ${newConfig.name}`)  
   }
 
