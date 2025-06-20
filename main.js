@@ -3,6 +3,7 @@ const connectDB = require('./db/connect.js');
 const app = express()
 const port = 3000
 const MonitorManager = require('./services/monitorService/monitorManager.js');
+const configManager = require('./services/configurationService/configurationManager');
 
 //const populateDB = require('./scripts/insertConfigs.js'); // Import populateDB script
 
@@ -10,7 +11,7 @@ app.use(express.json());
 
 //
 const httpProvider = "https://mainnet.infura.io/v3/9a8ff5d2c82f4a41a71fbb8595b6722c";
-const monitor = new MonitorManager(httpProvider);
+const monitor = new MonitorManager(httpProvider, configManager);
 monitor.start();
 
 //  Database connection

@@ -5,21 +5,27 @@ const TransactionSaver = require('./transactionSaver');
 const EventEmitter = require('events');
 
 class monitorManager extends EventEmitter{
-  constructor(httpProvider) {
+  constructor(httpProvider, configManager) {
     super();
+
+    // Singleton pattern to ensure only one instance of monitorManager exists
     if (monitorManager.instance) {
       return monitorManager.instance;
     }
 
-    if (!httpProvider) {
-      throw new Error('httpProvider is required to instantiate monitorManager');
-    }
-
     this.blockFilter = new BlockFilter(config);
     this.monitor = new MonitorEth(httpProvider);
-
+    this.configManager = configManager;
     monitorManager.instance = this;
+
+
+    // Listen for config updates
+    this.configManager.on('configUpdated', (newConfig) => {
+      this.handleConfigUpdate(newConfig);
+    });
   }
+
+
 
   getEETTime() {
     const now = new Date();
@@ -35,6 +41,10 @@ class monitorManager extends EventEmitter{
 
   errorWithTimestamp(...args) {
     console.error(`[${this.getEETTime()}]`, ...args);
+  }
+
+  handleConfigUpdate(newConfig) {
+    this.logWithTimestamp(`🔄 Configuration updated: ${newConfig.name}`)  
   }
 
   async start() {
