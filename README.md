@@ -43,11 +43,11 @@ Environment Variables
 MONGO_URI: MongoDB connection URI (default: mongodb://localhost:27017/eth-monitor)
 
 API Endpoints
-/monitor - Access monitoring endpoints
+   - /monitor - Access monitoring endpoints
+   
+   - /configure - Access configuration management endpoints
 
-/configure - Access configuration management endpoints
-
-Notes
+Notes:
 On first run, the database will be populated with default monitoring configurations.
 
 The app connects to the Ethereum mainnet using Infura by default.
