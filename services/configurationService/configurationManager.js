@@ -1,22 +1,26 @@
 const EventEmitter = require('events');
 const mongoose = require('mongoose');
 const Configuration = require('../../models/configuration');
+// Fallback configuration for testing purposes
+const config = require('../configurationService/configurations/config_2_test.json');
 
 class ConfigurationManager extends EventEmitter {
   constructor() {
     super();
     this.activeConfig = null;
-    // A flag for Singleton initialization
     this.initialized = false;
   }
 
   async init() {
     if (this.initialized) return;
-    this.activeConfig = await Configuration.findOne({ active: true });
+    console.log('🔍 Looking for active config in DB...');
+    this.activeConfig = await Configuration.findOne({ active: true }) || config;
     this.initialized = true;
     if (this.activeConfig) {
       this.emit('configUpdated', this.activeConfig);
     }
+    console.log('✅ ConfigurationManager initialized with active configuration:', this.activeConfig ? this.activeConfig.name : 'None');
+   
   }
 
   getActiveConfig() {

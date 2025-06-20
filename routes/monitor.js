@@ -30,4 +30,30 @@ router.get('/all_transactions', async (req, res) => {
   }
 });
 
+// GET transaction counts grouped by configId
+router.get('/transactions/summary', async (req, res) => {
+  try {
+    const summary = await Transaction.aggregate([
+      {
+        $group: {
+          _id: "$configId",               // Group by configId
+          transactionCount: { $sum: 1 }   // Count transactions
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          configId: "$_id",
+          transactionCount: 1
+        }
+      }
+    ]);
+
+    res.json({ summary });
+  } catch (err) {
+    console.error('Failed to aggregate transactions:', err);
+    res.status(500).json({ error: 'Failed to aggregate transactions' });
+  }
+});
+
 module.exports = router;

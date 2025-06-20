@@ -1,5 +1,4 @@
 const MonitorEth = require("./monitorWatcher");
-const config = require('../configurationService/configurations/config_2_test.json');
 const BlockFilter = require('./monitorFilter');
 const TransactionSaver = require('./transactionSaver');
 const EventEmitter = require('events');
@@ -13,7 +12,7 @@ class monitorManager extends EventEmitter{
       return monitorManager.instance;
     }
 
-    this.blockFilter = new BlockFilter(config);
+    this.blockFilter = new BlockFilter(configManager.getActiveConfig());
     this.monitor = new MonitorEth(httpProvider);
     this.configManager = configManager;
     monitorManager.instance = this;
@@ -71,7 +70,7 @@ class monitorManager extends EventEmitter{
               this.logWithTimestamp(`Block #${block.number} contains ${block.transactions.length} transaction(s).`);
             });
 
-            TransactionSaver.saveTransactions(filteredTxs, config)
+            TransactionSaver.saveTransactions(filteredTxs, this.blockFilter.config)
               .then(() => {
                 this.logWithTimestamp(`✅ Successfully saved ${filteredTxs.length} transaction(s) to the database.`);
               })

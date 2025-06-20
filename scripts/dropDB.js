@@ -8,7 +8,7 @@ const MONGO_URI = 'mongodb://localhost:27017/eth-monitor';
 async function dropDatabase() {
   try {
     await mongoose.connect(MONGO_URI);
-    console.log('Connected to MongoDB');
+    console.log('drobDB js scriptConnected to MongoDB');
 
     const db = mongoose.connection.db;
 
