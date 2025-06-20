@@ -29,23 +29,25 @@ It supports tracking ETH transfers, stablecoin movements, contract interactions,
    git clone <your-repo-url>
    cd <your-repo-directory>
 
-   Install dependencies:
+2. Install dependencies:
 
    ```bash
    npm install
 
-Make sure MongoDB is running:
+3. Make sure MongoDB is running:
 
-On Windows/macOS/Linux run:
+   On Windows/macOS/Linux run:
 
-mongod
+   ```bash
+   mongod
+
 Or start MongoDB service via your OS-specific commands
 
-Run the application:
+4. Run the application:
 
-
-node ./rootdir/main.js
-Replace ./rootdir/main.js with your actual main file path if different.
+   ```bash
+   node ./rootdir/main.js
+   Replace ./rootdir/main.js with your actual main file path if different.
 
 Environment Variables
 MONGO_URI: MongoDB connection URI (default: mongodb://localhost:27017/eth-monitor)
