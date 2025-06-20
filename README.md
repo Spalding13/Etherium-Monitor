@@ -28,10 +28,12 @@ It supports tracking ETH transfers, stablecoin movements, contract interactions,
    ```bash
    git clone <your-repo-url>
    cd <your-repo-directory>
-Install dependencies:
 
+   Install dependencies:
 
-npm install
+   ```bash
+   npm install
+
 Make sure MongoDB is running:
 
 On Windows/macOS/Linux run:
