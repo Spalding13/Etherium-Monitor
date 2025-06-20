@@ -51,8 +51,8 @@ const configs = [
     }
 ];
 
-async function insertData() {
-  await mongoose.connect('mongodb://localhost:27017/eth-monitor');
+async function insertData(MONGO_URI) {
+  await mongoose.connect(MONGO_URI);
 
   for (const cfg of configs) {
     const existing = await Configuration.findOne({ name: cfg.name });

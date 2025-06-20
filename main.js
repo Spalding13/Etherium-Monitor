@@ -7,7 +7,10 @@ const port = 3000;
 const configureRouter = require('./routes/configure'); 
 const monitorRouter = require('./routes/monitor');
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eth-monitor';
+mongo_remote_uri = "mongodb+srv://ilianlalov:rSB70y9KfyaTUOBu@cluster0.7lnmtoq.mongodb.net/eth-monitor?retryWrites=true&w=majority&appName=Cluster0"
+
+//const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eth-monitor';
+const MONGO_URI = mongo_remote_uri;
 
 app.use(express.json());
 
@@ -16,7 +19,7 @@ const startServer = async () => {
     await connectDB(MONGO_URI);
 
     // Attempt to populate the database
-    await populateDB();
+    await populateDB(MONGO_URI);
     
     // Initialize configManager after populating the database
     const configManager = require('./services/configurationService/configurationManager');

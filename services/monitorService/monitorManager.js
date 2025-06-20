@@ -53,6 +53,8 @@ class monitorManager extends EventEmitter{
 
       this.logWithTimestamp("🟢 Monitoring Ethereum transactions...");
 
+      // TODO: Figure out how to use node-cron or similar to schedule this task
+      // For now, using setInterval to poll every 30 seconds
       setInterval(async () => {
         try {
           this.logWithTimestamp("🔄 Checking for new transactions...");
