@@ -2,9 +2,11 @@ const MonitorEth = require("./monitorWatcher");
 const config = require('../configurationService/configurations/config_2_test.json');
 const BlockFilter = require('./monitorFilter');
 const TransactionSaver = require('./transactionSaver');
+const EventEmitter = require('events');
 
-class monitorManager {
+class monitorManager extends EventEmitter{
   constructor(httpProvider) {
+    super();
     if (monitorManager.instance) {
       return monitorManager.instance;
     }

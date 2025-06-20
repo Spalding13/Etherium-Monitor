@@ -55,4 +55,5 @@ class ConfigurationManager extends EventEmitter {
 
 }
 
-module.exports = ConfigurationManager;
+// Export a singleton instance
+module.exports = new ConfigurationManager();
