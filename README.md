@@ -26,7 +26,7 @@ It supports tracking ETH transfers, stablecoin movements, contract interactions,
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Spalding13/Etherium-Monitor/tree/main
+   git clone https://github.com/Spalding13/Etherium-Monitor
    cd "repo-directory"
 
 2. Install dependencies:
