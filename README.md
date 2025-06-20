@@ -48,7 +48,7 @@ API Endpoints
    - /configure - Access configuration management endpoints
 
 Notes:
-On first run, the database will be populated with default monitoring configurations.
+On first run, the remote database will be populated with default monitoring configurations.
 
 The app connects to the Ethereum mainnet using Infura by default.
 
