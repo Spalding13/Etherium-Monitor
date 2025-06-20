@@ -34,16 +34,7 @@ It supports tracking ETH transfers, stablecoin movements, contract interactions,
    ```bash
    npm install
 
-3. Make sure MongoDB is running:
-
-   On Windows/macOS/Linux run:
-
-   ```bash
-   mongod
-
-Or start MongoDB service via your OS-specific commands
-
-4. Run the application:
+3. Run the application:
 
    ```bash
    node ./rootdir/main.js
