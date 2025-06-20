@@ -37,8 +37,7 @@ It supports tracking ETH transfers, stablecoin movements, contract interactions,
 3. Run the application:
 
    ```bash
-   node ./rootdir/main.js
-   Replace ./rootdir/main.js with your actual main file path if different.
+   node ./main.js
 
 Environment Variables
 MONGO_URI: MongoDB connection URI (default: mongodb://localhost:27017/eth-monitor)
